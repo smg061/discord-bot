@@ -35,6 +35,19 @@ async def request_magic_ball(question):
     return json.loads(response.read())
 
 
+def dumbCase(message):
+    dumb_case_msg = ""
+    for letter in message:
+        if letter.isupper():
+            dumb_case_msg += letter.lower()
+        elif letter.islower():
+            dumb_case_msg += letter.upper()
+        else:
+            dumb_case_msg += letter
+
+    return dumb_case_msg
+
+
 @client.event
 async def on_ready():
     print('We have logged in as {0.user}'.format(client))
@@ -67,12 +80,18 @@ async def magic_ball(context, *args):
     except:
         await context.send("Something went wrong with your request")
 
-@client.command(brief="agony, pure pain")
 
+@client.command(brief="agony, pure pain")
 async def agony(context):
-    length = random.randint(5,120)
+    length = random.randint(5, 120)
     scream = ''.join(random.choice(['a', 'A']) for i in range(length))
     await context.send(scream)
+
+
+@client.command(brief="turn a message to dumbcase")
+async def dumbcase(context, *args):
+    sentence = " ".join(args)
+    await context.send(dumbCase(sentence))
 
 
 @client.event
@@ -84,7 +103,6 @@ async def on_message(message):
         await message.channel.send(f'Hello, {message.author.name}!')
         print(message)
     await client.process_commands(message)
-
 
 
 client.run(os.getenv('TOKEN'))
