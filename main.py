@@ -17,7 +17,7 @@ db_client = connect_to_db()
 collection = db_client.DiscordBotDb.User
 
 
-async def request_quote(message):
+async def request_quote(message: str) -> str:
     r = requests.post(
         "https://api.deepai.org/api/text-generator",
         data={
@@ -28,24 +28,24 @@ async def request_quote(message):
     return r.json()
 
 
-async def request_magic_ball(question):
+async def request_magic_ball(question : str) -> str:
     conn = http.client.HTTPSConnection("8ball.delegator.com")
     conn.request('GET', '/magic/JSON/' + question)
     response = conn.getresponse()
     return json.loads(response.read())
 
 
-def dumbCase(message):
-    dumb_case_msg = ""
+def dumb_case(message: str) -> str:
+    dumb_case_msg = []
+    counter = 0
     for letter in message:
-        if letter.isupper():
-            dumb_case_msg += letter.lower()
-        elif letter.islower():
-            dumb_case_msg += letter.upper()
+        if counter % 2 == 0:
+            dumb_case_msg.append(letter.lower())
         else:
-            dumb_case_msg += letter
+            dumb_case_msg.append(letter.upper())
+        counter+=1
+    return ''.join(dumb_case_msg)
 
-    return dumb_case_msg
 
 
 @client.event
@@ -91,7 +91,7 @@ async def agony(context):
 @client.command(brief="turn a message to dumbcase")
 async def dumbcase(context, *args):
     sentence = " ".join(args)
-    await context.send(dumbCase(sentence))
+    await context.send(dumb_case(sentence))
 
 
 @client.event
